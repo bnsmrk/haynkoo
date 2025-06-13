@@ -1,12 +1,12 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Section;
 use App\Models\Student;
+use App\Models\Subject;
 use App\Models\YearLevel;
 use Illuminate\Http\Request;
 
@@ -26,25 +26,29 @@ class EnrollStudentController extends Controller
         // Fetch all sections, including their associated grade level
         $sections = Section::all(['id', 'section_name', 'year_level_id']);
 
-        // Pass data to the frontend using Inertia
-       return Inertia::render('Enroll/Index', [
-        'students' => $students,
-        'yearLevels' => $yearLevels,
-        'sections' => $sections,
-    ]);
+        // Fetch all subjects
+        $subjects = Subject::all(['id', 'subject_name', 'year_level_id', 'section_id']);
 
+        // Pass data to the frontend using Inertia
+        return Inertia::render('Enroll/Index', [
+            'students' => $students,
+            'yearLevels' => $yearLevels,
+            'sections' => $sections,
+            'subjects' => $subjects, // Pass subjects to the frontend
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-  {
+    {
         // Validate the incoming request
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id', // Ensure the user exists in the users table
             'year_level' => 'required|string|max:255',
             'section' => 'required|string|max:255',
+            'subject' => 'required|string|max:255', // Validate subject selection
         ]);
 
         // Retrieve the selected year level and section from the database
@@ -53,17 +57,31 @@ class EnrollStudentController extends Controller
                           ->where('year_level_id', $yearLevel->id)
                           ->first();
 
+        // Fetch the subject based on the selected section and year level
+        $subject = Subject::where('subject_name', $validated['subject'])
+                          ->where('year_level_id', $yearLevel->id)
+                          ->where('section_id', $section->id)
+                          ->first();
+
         // Check if the section exists for the selected year level
         if (!$section) {
             return redirect()->back()->with('error', 'Section not found for the selected year level.');
+        }
+
+        // Check if the subject exists for the selected section and year level
+        if (!$subject) {
+            return redirect()->back()->with('error', 'Subject not found for the selected section and year level.');
         }
 
         // Save the enrollment data in the students table
         Student::create([
             'user_id' => $validated['user_id'],
             'year_level' => $validated['year_level'],
-            'section' => $validated['section'],
+            'subject' => $validated['subject'], // Store the selected subject
             'section_id' => $section->id,  // Storing the section ID for reference
+            'subject_id' => $subject->id,  // Storing the subject ID for reference
+            'section_id' => $section->id,  // <-- This column is missing in DB
+    'subject_id' => $subject->id,
         ]);
 
         // Return a success response
@@ -107,6 +125,7 @@ class EnrollStudentController extends Controller
         $validated = $request->validate([
             'year_level' => 'required|string|max:255',
             'section' => 'required|string|max:255',
+            'subject' => 'required|string|max:255', // Validate subject selection
         ]);
 
         // Update the enrollment data

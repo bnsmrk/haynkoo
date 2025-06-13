@@ -34,6 +34,11 @@ const mainNavItems: NavItem[] = [
         href: '/enroll',
         icon: LayoutGrid,
     },
+    {
+        title: 'Upload Materials',
+        href: '/materials',
+        icon: LayoutGrid,
+    },
 ];
 
 const footerNavItems: NavItem[] = [

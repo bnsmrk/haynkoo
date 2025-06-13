@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Student;
 use App\Models\Subject;
 use App\Models\YearLevel;
 use Illuminate\Database\Eloquent\Model;
@@ -24,5 +25,9 @@ class Section extends Model
     public function subjects()
     {
         return $this->hasMany(Subject::class);  // A Section has many Subjects
+    }
+    public function students()
+    {
+        return $this->hasMany(Student::class);
     }
 }

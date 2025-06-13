@@ -11,19 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subjects', function (Blueprint $table) {
-          $table->id();
-
-            // Add the year_level_id column using foreignId
+        Schema::create('materials', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('teacher_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('year_level_id')->constrained('year_levels')->onDelete('cascade');
-
-            // Add the subject_name column
-            $table->string('subject_name'); // Subject names like 'Math', 'Science', etc.
-
-            // Add the foreign key to section_id using foreignId
             $table->foreignId('section_id')->constrained('sections')->onDelete('cascade');
-
-            // Timestamps for created_at and updated_at
+            $table->foreignId('subject_id')->constrained('subjects')->onDelete('cascade');
+            $table->enum('material_type', ['learning_material', 'lesson_plan']);
+            $table->string('file_path');
             $table->timestamps();
         });
     }
@@ -33,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subjects');
+        Schema::dropIfExists('materials');
     }
 };

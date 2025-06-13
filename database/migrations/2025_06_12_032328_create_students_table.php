@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Foreign key to users table
             $table->string('year_level');
-            $table->string('section');
+            $table->foreignId('section_id')->constrained('sections')->onDelete('cascade');
+            $table->foreignId('subject_id')->constrained('subjects')->onDelete('cascade'); // Foreign key to subjects table
             $table->timestamps();
         });
     }

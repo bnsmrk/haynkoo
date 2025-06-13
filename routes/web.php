@@ -3,6 +3,7 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExamController;
+use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\TeachersController;
@@ -21,6 +22,8 @@ Route::resource('exams', ExamController::class);
 Route::resource('students', StudentsController::class);
 Route::resource('teachers', TeachersController::class);
 Route::resource('enroll', EnrollStudentController::class);
+Route::resource('materials', MaterialController::class);
+
 
 // Route::get('/enroll/students', [EnrollStudentController::class, 'getStudents']);
 // Route::get('/enroll/year-levels', [EnrollStudentController::class, 'getYearLevels']);
