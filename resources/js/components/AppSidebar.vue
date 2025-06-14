@@ -39,6 +39,11 @@ const mainNavItems: NavItem[] = [
         href: '/materials',
         icon: LayoutGrid,
     },
+    {
+        title: 'Activity',
+        href: '/activity',
+        icon: LayoutGrid,
+    },
 ];
 
 const footerNavItems: NavItem[] = [

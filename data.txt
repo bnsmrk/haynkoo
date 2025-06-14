@@ -1,0 +1,53 @@
+
+INSERT INTO year_levels (year_level, created_at, updated_at) VALUES
+('Grade 7', NOW(), NOW()),
+('Grade 8', NOW(), NOW()),
+('Grade 9', NOW(), NOW()),
+('Grade 10', NOW(), NOW()),
+('Grade 11', NOW(), NOW()),
+('Grade 12', NOW(), NOW());
+
+
+-- Grade 7
+INSERT INTO sections (section_name, year_level_id, created_at, updated_at) VALUES
+('Diamond', 1, NOW(), NOW()),
+('Pearl', 1, NOW(), NOW());
+
+-- Grade 8
+INSERT INTO sections (section_name, year_level_id, created_at, updated_at) VALUES
+('Yakal', 2, NOW(), NOW()),
+('Narra', 2, NOW(), NOW());
+
+-- Grade 9
+INSERT INTO sections (section_name, year_level_id, created_at, updated_at) VALUES
+('Mary', 3, NOW(), NOW()),
+('Therese', 3, NOW(), NOW());
+
+-- Grade 10
+INSERT INTO sections (section_name, year_level_id, created_at, updated_at) VALUES
+('John', 4, NOW(), NOW()),
+('Mark', 4, NOW(), NOW());
+
+-- Grade 11
+INSERT INTO sections (section_name, year_level_id, created_at, updated_at) VALUES
+('ICT', 5, NOW(), NOW()),
+('Nail Care', 5, NOW(), NOW());
+
+-- Grade 12
+INSERT INTO sections (section_name, year_level_id, created_at, updated_at) VALUES
+('ICT', 6, NOW(), NOW()),
+('Nail Care', 6, NOW(), NOW());
+
+
+
+
+-- Step 1: Loop through each year_level_id and section_id, and insert random subjects
+INSERT INTO subjects (year_level_id, section_id, subject_name)
+SELECT
+    year_levels.id AS year_level_id,
+    sections.id AS section_id,
+    CONCAT('Subject ', FLOOR(1 + (RAND() * 1000))) AS subject_name
+FROM
+    year_levels
+JOIN
+    sections ON sections.year_level_id = year_levels.id;

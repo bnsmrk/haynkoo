@@ -4,23 +4,24 @@ namespace App\Models;
 
 use App\Models\Section;
 use App\Models\Student;
+use App\Models\Subject;
+use App\Models\YearLevel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Subject extends Model
 {
-  use HasFactory;
+ use HasFactory;
 
-    // Table associated with the model
-    protected $table = 'subjects';
+    protected $fillable = ['subject_name', 'year_level_id', 'section_id'];
 
-    // Define the relationship with the Section model
+    public function yearLevel()
+    {
+        return $this->belongsTo(YearLevel::class);
+    }
+
     public function section()
     {
-        return $this->belongsTo(Section::class);  // A Subject belongs to one Section
-    }
-    public function students()
-    {
-        return $this->hasMany(Student::class);
+        return $this->belongsTo(Section::class);
     }
 }

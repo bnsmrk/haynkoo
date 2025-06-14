@@ -1,8 +1,11 @@
 <?php
 
 use Inertia\Inertia;
+
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExamController;
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\StudentsController;
@@ -23,6 +26,13 @@ Route::resource('students', StudentsController::class);
 Route::resource('teachers', TeachersController::class);
 Route::resource('enroll', EnrollStudentController::class);
 Route::resource('materials', MaterialController::class);
+// Route to display the activity form (GET request)
+Route::get('/activity', [ActivityController::class, 'index'])->name('activity.index');
+
+// Route to store the activity (POST request)
+Route::post('/activity', [ActivityController::class, 'store'])->name('activity.store');
+
+
 
 
 // Route::get('/enroll/students', [EnrollStudentController::class, 'getStudents']);

@@ -81,7 +81,7 @@ class EnrollStudentController extends Controller
             'section_id' => $section->id,  // Storing the section ID for reference
             'subject_id' => $subject->id,  // Storing the subject ID for reference
             'section_id' => $section->id,  // <-- This column is missing in DB
-    'subject_id' => $subject->id,
+            'subject_id' => $subject->id,
         ]);
 
         // Return a success response
