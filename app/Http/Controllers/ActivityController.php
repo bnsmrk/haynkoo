@@ -26,15 +26,14 @@ class ActivityController extends Controller
         ]);
     }
 
-    // Store the new activity
-   public function store(Request $request)
+public function store(Request $request)
 {
     // Validate the incoming request data
     $validated = $request->validate([
         'title' => 'required|string|max:255',
         'date' => 'required|date',
         'time' => 'required|date_format:H:i',
-        'year_level' => 'required|exists:year_levels,year_level',
+        'year_level' => 'required|exists:year_levels,id',  // Ensure this is `id` of the year level
         'section' => 'required|exists:sections,section_name',
         'subject' => 'required|exists:subjects,subject_name',
     ]);
@@ -43,7 +42,7 @@ class ActivityController extends Controller
     $dateTime = $validated['date'] . ' ' . $validated['time'];
 
     // Get the year_level_id, section_id, and subject_id
-    $yearLevel = YearLevel::where('year_level', $validated['year_level'])->first();
+    $yearLevel = YearLevel::find($validated['year_level']); // Use `year_level_id`
     $section = Section::where('section_name', $validated['section'])->first();
     $subject = Subject::where('subject_name', $validated['subject'])->first();
 
@@ -64,6 +63,8 @@ class ActivityController extends Controller
     // Return a success response
     return redirect()->route('activity.index')->with('success', 'Activity created successfully.');
 }
+
+
 
 
 }

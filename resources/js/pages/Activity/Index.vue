@@ -46,7 +46,7 @@ const errors = ref({
 
 // Filtered subjects based on year level and section
 const filteredSubjects = computed(() => {
-    const yearLevel = props.yearLevels.find((y) => y.year_level === selectedYearLevel.value);
+    const yearLevel = props.yearLevels.find((y) => y.id === selectedYearLevel.value);
     const section = props.sections.find((s) => s.section_name === selectedSection.value);
     if (yearLevel && section) {
         return props.subjects.filter((sub) => sub.year_level_id === yearLevel.id && sub.section_id === section.id);
@@ -56,7 +56,7 @@ const filteredSubjects = computed(() => {
 
 // Filtered sections based on the selected year level
 const filteredSections = computed(() => {
-    const level = props.yearLevels.find((lvl) => lvl.year_level === selectedYearLevel.value);
+    const level = props.yearLevels.find((lvl) => lvl.id === selectedYearLevel.value);
     return level ? props.sections.filter((sec) => sec.year_level_id === level.id) : [];
 });
 
@@ -64,7 +64,7 @@ const filteredSections = computed(() => {
 watch(
     () => props.yearLevels,
     () => {
-        selectedYearLevel.value = props.yearLevels[0]?.year_level || '';
+        selectedYearLevel.value = props.yearLevels[0]?.id || ''; // Ensure `id` is selected
     },
     { immediate: true },
 );
@@ -98,7 +98,7 @@ function saveForm() {
                 title: title.value,
                 date: date.value,
                 time: time.value,
-                year_level: selectedYearLevel.value,
+                year_level: selectedYearLevel.value, // Pass the `id` of the year level
                 section: selectedSection.value,
                 subject: selectedSubject.value,
             },
@@ -133,7 +133,7 @@ function saveForm() {
     <Head title="Activity" />
     <AppLayout :breadcrumbs="[{ title: 'Activity', href: '/activity' }]">
         <div class="mx-auto max-w-xl space-y-8 p-6">
-            <h2 class="mb-4 text-2xl font-bold">Activity Enrollment</h2>
+            <h2 class="mb-4 text-2xl font-bold">Activity</h2>
 
             <!-- Grid layout for form -->
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -163,7 +163,7 @@ function saveForm() {
                     <label class="mb-1 block text-sm font-medium">Year Level</label>
                     <select v-model="selectedYearLevel" class="w-full rounded border p-2">
                         <option disabled value="">Select a year level</option>
-                        <option v-for="level in props.yearLevels" :key="level.id" :value="level.year_level">
+                        <option v-for="level in props.yearLevels" :key="level.id" :value="level.id">
                             {{ level.year_level }}
                         </option>
                     </select>

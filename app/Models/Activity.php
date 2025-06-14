@@ -12,7 +12,7 @@ class Activity extends Model
     protected $fillable = [
     'title',
     'date_time',
-    'year_level',
+    'year_level_id',
     'section_id',
     'subject_id',
 ];
