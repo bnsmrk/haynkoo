@@ -27,14 +27,13 @@ Route::resource('teachers', TeachersController::class);
 Route::resource('enroll', EnrollStudentController::class);
 Route::resource('materials', MaterialController::class);
 // Route to display the activity form (GET request)
-Route::get('/activity', [ActivityController::class, 'index'])->name('activity.index');
+Route::resource('activity', ActivityController::class);
 
-// Route to store the activity (POST request)
-Route::post('/activity', [ActivityController::class, 'store'])->name('activity.store');
-
-
-
-
+    // Or if you prefer the individual route approach:
+    Route::get('/activity', [ActivityController::class, 'index'])->name('activity.index');
+    Route::post('/activity', [ActivityController::class, 'store'])->name('activity.store');
+    Route::put('/activity/{activity}', [ActivityController::class, 'update'])->name('activity.update');
+    Route::delete('/activity/{activity}', [ActivityController::class, 'destroy'])->name('activity.destroy');
 // Route::get('/enroll/students', [EnrollStudentController::class, 'getStudents']);
 // Route::get('/enroll/year-levels', [EnrollStudentController::class, 'getYearLevels']);
 // Route::get('/enroll/sections', [EnrollStudentController::class, 'getSections']);

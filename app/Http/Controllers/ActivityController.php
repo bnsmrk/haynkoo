@@ -2,69 +2,77 @@
 
 namespace App\Http\Controllers;
 
-use Inertia\Inertia;
-use App\Models\Section;
-use App\Models\Subject;
 use App\Models\Activity;
 use App\Models\YearLevel;
+use App\Models\Section;
+use App\Models\Subject;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ActivityController extends Controller
 {
-    // Display the activity form
     public function index()
     {
-        // Fetch the necessary data to show in the form
+        $activities = Activity::with(['yearLevel', 'section', 'subject'])->get();
         $yearLevels = YearLevel::all();
         $sections = Section::all();
         $subjects = Subject::all();
 
         return Inertia::render('Activity/Index', [
+            'activities' => $activities,
             'yearLevels' => $yearLevels,
             'sections' => $sections,
             'subjects' => $subjects,
         ]);
     }
 
-public function store(Request $request)
-{
-    // Validate the incoming request data
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'date' => 'required|date',
-        'time' => 'required|date_format:H:i',
-        'year_level' => 'required|exists:year_levels,id',  // Ensure this is `id` of the year level
-        'section' => 'required|exists:sections,section_name',
-        'subject' => 'required|exists:subjects,subject_name',
-    ]);
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'date' => 'required|date',
+            'time' => 'required|date_format:H:i',
+            'year_level_id' => 'required|exists:year_levels,id',
+            'section_id' => 'required|exists:sections,id',
+            'subject_id' => 'required|exists:subjects,id',
+        ]);
 
-    // Combine the date and time into a single date_time value
-    $dateTime = $validated['date'] . ' ' . $validated['time'];
+        Activity::create([
+            'title' => $validated['title'],
+            'date_time' => $validated['date'] . ' ' . $validated['time'],
+            'year_level_id' => $validated['year_level_id'],
+            'section_id' => $validated['section_id'],
+            'subject_id' => $validated['subject_id'],
+        ]);
 
-    // Get the year_level_id, section_id, and subject_id
-    $yearLevel = YearLevel::find($validated['year_level']); // Use `year_level_id`
-    $section = Section::where('section_name', $validated['section'])->first();
-    $subject = Subject::where('subject_name', $validated['subject'])->first();
-
-    // Check if the related records exist
-    if (!$yearLevel || !$section || !$subject) {
-        return back()->withErrors('Unable to find related records.');
+        return redirect()->back();
     }
 
-    // Create and store the new activity in the database
-    Activity::create([
-        'title' => $validated['title'],
-        'date_time' => $dateTime, // Store as a single column
-        'year_level_id' => $yearLevel->id, // Set the correct year_level_id
-        'section_id' => $section->id, // Set the correct section_id
-        'subject_id' => $subject->id, // Set the correct subject_id
-    ]);
+    public function update(Request $request, Activity $activity)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'date' => 'required|date',
+            'time' => 'required|date_format:H:i',
+            'year_level_id' => 'required|exists:year_levels,id',
+            'section_id' => 'required|exists:sections,id',
+            'subject_id' => 'required|exists:subjects,id',
+        ]);
 
-    // Return a success response
-    return redirect()->route('activity.index')->with('success', 'Activity created successfully.');
-}
+        $activity->update([
+            'title' => $validated['title'],
+            'date_time' => $validated['date'] . ' ' . $validated['time'],
+            'year_level_id' => $validated['year_level_id'],
+            'section_id' => $validated['section_id'],
+            'subject_id' => $validated['subject_id'],
+        ]);
 
+        return redirect()->back();
+    }
 
-
-
+    public function destroy(Activity $activity)
+    {
+        $activity->delete();
+        return redirect()->back();
+    }
 }
